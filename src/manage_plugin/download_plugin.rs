@@ -10,9 +10,14 @@ use crate::utils::{get_lib_extension, download};
 use crate::{DEFAULT_PLUGIN_DIRECTORY};
 
 
-pub fn new(id:&str, manifest_url: &str) -> Result<(), Box<dyn std::error::Error>> {
-    println!("ID: {} | URL: {}", &id, &manifest_url);
-    println!("OS: {} | Arch: {}", consts::OS, consts::ARCH);
+
+
+pub fn new(
+    id:&str, 
+    manifest_url: &str, 
+    callback: fn(current_size: usize, total_size: usize),
+    log_progress: bool
+) -> Result<(), Box<dyn std::error::Error>> {
 
     let mut manifest_data: Value = Value::Null;
     
@@ -34,7 +39,7 @@ pub fn new(id:&str, manifest_url: &str) -> Result<(), Box<dyn std::error::Error>
         .as_str().ok_or("Unable to convert file url to str")?;
 
     let lib_extension = get_lib_extension::new()?;
-    let file_name = format!("{}{}", "lib-hianime", &lib_extension);
+    let file_name = format!("lib-{}{}", &id, &lib_extension);
     let plugin_dir = PathBuf::from(std::env::var("PLUGIN_DIRECTORY").unwrap_or(DEFAULT_PLUGIN_DIRECTORY.to_string()));
     if !plugin_dir.exists() {
         fs::create_dir_all(&plugin_dir)?;
@@ -42,13 +47,13 @@ pub fn new(id:&str, manifest_url: &str) -> Result<(), Box<dyn std::error::Error>
 
     let output_file = PathBuf::from(&plugin_dir).join(&file_name);
     
-    download::new(file_url, &output_file.to_str().ok_or("Unable to convert output path to str")?, 
-        |current_size, total_size| {
-            println!("Downloaded {} of {}", current_size, total_size);
-        }
+    download::new(
+        file_url, 
+        &output_file.to_str().ok_or("Unable to convert output path to str")?, 
+        callback,
+        log_progress
     )?;
 
-    println!("Result: {:?}", &plugin_dir);
     
     return Ok(());
 }

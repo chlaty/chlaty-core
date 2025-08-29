@@ -29,7 +29,12 @@ mod tests {
     #[test]
     fn test_1() {
         dotenv().ok();
-        let result = download_plugin::new("hianime", "https://github.com/chlaty/chlaty-lib-hianime/releases/download/0.1.0/manifest.json");
+        let result = download_plugin::new(
+            "hianime", 
+            "https://github.com/chlaty/chlaty-lib-hianime/releases/download/0.1.0/manifest.json",
+            |_, _| {},
+            true
+        );
         println!("Result: {:?}", result.unwrap());
     }
 }

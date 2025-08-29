@@ -5,7 +5,27 @@ use indicatif::{ProgressBar, ProgressStyle};
 use reqwest::blocking::Client;
 
 
-pub fn new(url: &str, output_file: &str, callback: fn(current_size: usize, total_size: usize)) -> Result<(), Box<dyn std::error::Error>> {
+/// Downloads a file from a given URL and saves it to the given output file.
+///
+/// `url`: The URL of the file to download.
+///
+/// `output_file`: The file path where the downloaded file will be saved.
+///
+/// `callback`: A callback function that will be called once per block
+///             of data received from the server. The callback will be
+///             given two arguments: the number of bytes that have been
+///             downloaded so far, and the total size of the file.
+///
+/// `log_progress`: A boolean indicating whether to display a progress
+///                 bar while the download is in progress. If `true`, a
+///                 progress bar will be displayed, otherwise no output will
+///                 be generated.
+pub fn new(
+    url: &str, 
+    output_file: &str, 
+    callback: fn(current_size: usize, total_size: usize),
+    log_progress: bool
+) -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::new();
 
     let response = match client.get(url).send() {
@@ -19,14 +39,22 @@ pub fn new(url: &str, output_file: &str, callback: fn(current_size: usize, total
         None => return Err("Can't determine content length".into()),
     };
 
-    let pb = ProgressBar::new(total_size);
-    pb.set_style(
-        ProgressStyle::with_template(
-            "[{elapsed_precise}] [{bar:40.cyan/blue}] {bytes}/{total_bytes} ({eta})",
-        )
-        .unwrap()
-        .progress_chars("#>-"),
-    );
+    let mut pb = if log_progress {
+        Some(ProgressBar::new(total_size))
+    } else {
+        None
+    };
+
+
+    if let Some(pb) = pb.as_mut() {
+        pb.set_style(
+            ProgressStyle::with_template(
+                "[{elapsed_precise}] [{bar:40.cyan/blue}] {bytes}/{total_bytes} ({eta})",
+            )
+            .unwrap()
+            .progress_chars("#>-"),
+        );
+    }
 
     let path = Path::new(output_file);
     let mut file = match File::create(&path) {
@@ -51,10 +79,12 @@ pub fn new(url: &str, output_file: &str, callback: fn(current_size: usize, total
         }
 
         downloaded += bytes_read as u64;
-        pb.set_position(downloaded);
+        if let Some(pb) = pb.as_mut() {
+            pb.set_position(downloaded);
+        }
     }
-
-    pb.finish_with_message("✅ Download complete");
-
+    if let Some(pb) = pb {
+        pb.finish_with_message("✅ Download complete");
+    }
     Ok(())
 }
