@@ -1,0 +1,14 @@
+[package]
+name = "chlaty-core"
+version = "0.1.0"
+edition = "2024"
+
+[profile.release]
+opt-level = 3 
+lto = true 
+strip = true
+
+[dependencies]
+serde_json = "1.0.143"
+reqwest = {version = "0.12.23", default-features = false, features = ["rustls-tls", "blocking", "json"]}
+dotenv = "0.15.0"
