@@ -1,7 +1,6 @@
 use std::fs::File;
 use std::io::{BufReader, Read, Write};
 use std::path::Path;
-use indicatif::{ProgressBar, ProgressStyle};
 use reqwest::blocking::Client;
 
 
@@ -16,15 +15,10 @@ use reqwest::blocking::Client;
 ///             given two arguments: the number of bytes that have been
 ///             downloaded so far, and the total size of the file.
 ///
-/// `log_progress`: A boolean indicating whether to display a progress
-///                 bar while the download is in progress. If `true`, a
-///                 progress bar will be displayed, otherwise no output will
-///                 be generated.
 pub fn new(
     url: &str, 
     output_file: &str, 
-    callback: fn(current_size: usize, total_size: usize),
-    log_progress: bool
+    callback: fn(current_size: usize, total_size: usize)
 ) -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::new();
 
@@ -39,22 +33,22 @@ pub fn new(
         None => return Err("Can't determine content length".into()),
     };
 
-    let mut pb = if log_progress {
-        Some(ProgressBar::new(total_size))
-    } else {
-        None
-    };
+    // let mut pb = if log_progress {
+    //     Some(ProgressBar::new(total_size))
+    // } else {
+    //     None
+    // };
 
 
-    if let Some(pb) = pb.as_mut() {
-        pb.set_style(
-            ProgressStyle::with_template(
-                "[{elapsed_precise}] [{bar:40.cyan/blue}] {bytes}/{total_bytes} ({eta})",
-            )
-            .unwrap()
-            .progress_chars("#>-"),
-        );
-    }
+    // if let Some(pb) = pb.as_mut() {
+    //     pb.set_style(
+    //         ProgressStyle::with_template(
+    //             "[{elapsed_precise}] [{bar:40.cyan/blue}] {bytes}/{total_bytes} ({eta})",
+    //         )
+    //         .unwrap()
+    //         .progress_chars("#>-"),
+    //     );
+    // }
 
     let path = Path::new(output_file);
     let mut file = match File::create(&path) {
@@ -79,12 +73,12 @@ pub fn new(
         }
 
         downloaded += bytes_read as u64;
-        if let Some(pb) = pb.as_mut() {
-            pb.set_position(downloaded);
-        }
+        // if let Some(pb) = pb.as_mut() {
+        //     pb.set_position(downloaded);
+        // }
     }
-    if let Some(pb) = pb {
-        pb.finish_with_message("✅ Download complete");
-    }
+    // if let Some(pb) = pb {
+    //     pb.finish_with_message("✅ Download complete");
+    // }
     Ok(())
 }

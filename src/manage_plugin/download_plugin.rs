@@ -1,59 +1,123 @@
 
-use serde_json::{Value, from_reader};
+use serde_json::{from_reader, from_value, json, Value, to_string};
 use std::io::{BufReader};
 use reqwest;
 use std::{env::consts};
 use std::path::{PathBuf};
 use std::fs;
+use sled;
 
 use crate::utils::{get_lib_extension, download};
 use crate::{DEFAULT_PLUGIN_DIRECTORY};
 
 
+use serde::{Deserialize, Serialize};
 
 
-pub fn new(
-    id:&str, 
-    manifest_url: &str, 
-    callback: fn(current_size: usize, total_size: usize),
-    log_progress: bool
-) -> Result<(), Box<dyn std::error::Error>> {
 
-    let mut manifest_data: Value = Value::Null;
+
+struct GetPluginRelease{
+    url: String,
+    version: String
+}
+fn get_plugin_release(manifest_url: &str, version: &str) -> Result<GetPluginRelease, Box<dyn std::error::Error>> {
     
     let client = reqwest::blocking::Client::new();
     let res = client.get(manifest_url).send()?;
 
     if res.status().is_success() {
         let manifest_reader = BufReader::new(res);
-        manifest_data = from_reader(manifest_reader)?;
+        let manifest_data: Value = from_reader(manifest_reader)?;
+        let version_to_use = if version == "latest" {
+            manifest_data.get("latest-version")
+                .ok_or("Unable to find latest version inside manifest")?
+                .as_str().ok_or("Unable to convert latest version to str")?
+        }else{version};
         
-    }
-    
-    
-    let data = manifest_data.get(consts::OS).and_then(|a| a.get(consts::ARCH))
-        .ok_or("Unable to find supported OS and Arch inside manifest")?;
+        
+        let release_url = manifest_data.get(version_to_use)
+            .ok_or("Unable to find release url inside manifest")?
+            .as_str().ok_or("Unable to convert release url to str")?
+            .to_string();
 
-    let file_url = data.get("file")
-        .ok_or("Unable to find file url inside manifest")?
-        .as_str().ok_or("Unable to convert file url to str")?;
 
-    let lib_extension = get_lib_extension::new()?;
-    let file_name = format!("lib-{}{}", &id, &lib_extension);
-    let plugin_dir = PathBuf::from(std::env::var("PLUGIN_DIRECTORY").unwrap_or(DEFAULT_PLUGIN_DIRECTORY.to_string()));
-    if !plugin_dir.exists() {
-        fs::create_dir_all(&plugin_dir)?;
+        return Ok(GetPluginRelease { url: release_url, version: version_to_use.to_string() });
+
+    }else{
+        return Err("Unable to download manifest".into());
     }
 
-    let output_file = PathBuf::from(&plugin_dir).join(&file_name);
     
-    download::new(
-        file_url, 
-        &output_file.to_str().ok_or("Unable to convert output path to str")?, 
-        callback,
-        log_progress
-    )?;
 
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct SourceManifest {
+    title: String,
+    manifest: String
+}
+
+pub fn new(
+    id:&str, 
+    version: &str,
+    manifest: Value, 
+    callback: fn(current_size: usize, total_size: usize)
+) -> Result<(), Box<dyn std::error::Error>> {
+    let source_manifest_info: SourceManifest = from_value(manifest)?;
+
+    let get_plugin_release_result:GetPluginRelease;
+    match get_plugin_release(source_manifest_info.manifest.as_str(), version) {
+        Ok(result) => get_plugin_release_result = result,
+        Err(e) => return Err(e),
+    }
     
-    return Ok(());
+    let client = reqwest::blocking::Client::new();
+    let res = client.get(get_plugin_release_result.url).send()?;
+
+    if res.status().is_success() {
+        let manifest_reader = BufReader::new(res);
+        let release_manifest_data: Value = from_reader(manifest_reader)?;
+        
+        let data = release_manifest_data.get(consts::OS).and_then(|a| a.get(consts::ARCH))
+            .ok_or("Unable to find supported OS and Arch inside manifest")?;
+
+
+        let file_url = data.get("file")
+            .ok_or("Unable to find file url inside manifest")?
+            .as_str().ok_or("Unable to convert file url to str")?;
+
+        let lib_extension = get_lib_extension::new()?;
+        let file_name = format!("lib-{}{}", &id, &lib_extension);
+        let plugin_dir = PathBuf::from(std::env::var("PLUGIN_DIRECTORY").unwrap_or(DEFAULT_PLUGIN_DIRECTORY.to_string()));
+        if !plugin_dir.exists() {
+            fs::create_dir_all(&plugin_dir)?;
+        }
+
+        
+
+        let output_file = PathBuf::from(&plugin_dir).join(&file_name);
+        
+        download::new(
+            file_url, 
+            &output_file.to_str().ok_or("Unable to convert output path to str")?, 
+            callback
+        )?;
+
+        let tree = sled::open(&plugin_dir.join("manifest"))?;
+
+        let store_value = json!({
+            "title": source_manifest_info.title,
+            "version": get_plugin_release_result.version,
+            "plugin_path": &output_file.to_str().ok_or("Unable to convert output path to str")?
+            
+        });
+        tree.insert(
+            &id.as_bytes(),
+            to_string(&store_value)?.as_bytes()
+        )?;
+        tree.flush()?;
+        return Ok(());
+    }else{
+        return Err("Unable to download manifest".into());
+    }
 }

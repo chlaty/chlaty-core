@@ -8,6 +8,7 @@ pub const DEFAULT_PLUGIN_DIRECTORY: &str = "plugins";
 
 pub mod utils;
 pub mod manage_plugin;
+pub mod request_plugin;
 
 #[cfg(test)]
 mod test;
