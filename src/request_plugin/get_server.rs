@@ -49,7 +49,7 @@ pub struct DataResult {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct ReturnResult { 
+pub struct ServerResult { 
     pub data: DataResult,
     pub config: Config
 }
@@ -71,7 +71,7 @@ pub struct RequestResult {
 }
 
 
-pub fn new(plugin_id: &str, id: &str) -> Result<ReturnResult, Box<dyn std::error::Error>>{
+pub fn new(plugin_id: &str, id: &str) -> Result<ServerResult, Box<dyn std::error::Error>>{
 
     let plugin_dir = PathBuf::from(std::env::var("PLUGIN_DIRECTORY").unwrap_or(DEFAULT_PLUGIN_DIRECTORY.to_string()));
     if !plugin_dir.exists() {
@@ -110,7 +110,7 @@ pub fn new(plugin_id: &str, id: &str) -> Result<ReturnResult, Box<dyn std::error
         }
     }
 
-    Ok(ReturnResult{
+    Ok(ServerResult{
         data: request_result.data,
         config: request_result.config
     })
