@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{from_str, to_string, json};
 use std::ffi::{CString, c_char};
 use std::fs;
+use std::num::NonZeroUsize;
 use std::path::PathBuf;
 use libloading::{Library, Symbol};
 use std::str::{from_utf8};
@@ -34,7 +35,7 @@ pub struct RequestResult {
 }
 
 
-pub fn new(plugin_id: &str, search: &str, page: usize) -> Result<Vec<DataResult>, Box<dyn std::error::Error>>{
+pub fn new(plugin_id: &str, search: &str, page: NonZeroUsize) -> Result<Vec<DataResult>, Box<dyn std::error::Error>>{
 
     let plugin_dir = PathBuf::from(std::env::var("PLUGIN_DIRECTORY").unwrap_or(DEFAULT_PLUGIN_DIRECTORY.to_string()));
     if !plugin_dir.exists() {
