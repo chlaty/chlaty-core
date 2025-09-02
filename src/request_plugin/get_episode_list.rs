@@ -13,6 +13,7 @@ use crate::{ DEFAULT_PLUGIN_DIRECTORY };
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct DataResult { 
+    pub index: usize,
     pub id: String,
     pub title: String
 }
