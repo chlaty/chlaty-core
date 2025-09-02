@@ -12,7 +12,7 @@ use crate::{ DEFAULT_PLUGIN_DIRECTORY };
 
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct ReturnResult { 
+pub struct DataResult { 
     pub id: String,
     pub title: String,
     pub cover: String
@@ -30,11 +30,11 @@ pub struct PluginInfo {
 pub struct RequestResult {
     pub status: bool,
     pub message: String,
-    pub data: Vec<ReturnResult>
+    pub data: Vec<DataResult>
 }
 
 
-pub fn new(plugin_id: &str, search: &str, page: usize) -> Result<Vec<ReturnResult>, Box<dyn std::error::Error>>{
+pub fn new(plugin_id: &str, search: &str, page: usize) -> Result<Vec<DataResult>, Box<dyn std::error::Error>>{
 
     let plugin_dir = PathBuf::from(std::env::var("PLUGIN_DIRECTORY").unwrap_or(DEFAULT_PLUGIN_DIRECTORY.to_string()));
     if !plugin_dir.exists() {
