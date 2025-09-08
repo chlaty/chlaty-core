@@ -26,7 +26,7 @@ pub struct SourceInfo {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TrackInfo {
     pub file: String,
-
+    pub label: String,
     pub kind: String,
 }
 
