@@ -41,8 +41,8 @@ pub struct Config {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct DataResult { 
-    pub intro: Timeline,
-    pub outro: Timeline,
+    pub intro: Option<Timeline>,
+    pub outro: Option<Timeline>,
     pub sources: Vec<SourceInfo>,
     pub tracks: Vec<TrackInfo>,
     
@@ -109,7 +109,7 @@ pub fn new(plugin_id: &str, id: &str) -> Result<ServerResult, Box<dyn std::error
             return Err(format!("[Request failed]: {}", request_result.message).into());
         }
     }
-
+    
     Ok(ServerResult{
         data: request_result.data,
         config: request_result.config
