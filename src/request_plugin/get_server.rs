@@ -33,6 +33,7 @@ pub struct TrackInfo {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
     pub host: String,
+    pub origin: String,
     pub referer: String,
     pub playlist_base_url: String,
     pub segment_base_url: String,
