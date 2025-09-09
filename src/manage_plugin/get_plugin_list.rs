@@ -23,7 +23,7 @@ pub struct SourceInfo {
 pub fn new() -> Result<HashMap<String, SourceInfo>, Box<dyn std::error::Error>> {
     let mut manifest_data: HashMap<String, SourceInfo> = HashMap::new();
 
-    if cfg!(debug_assertions) && USE_LOCAL_MANIFEST {
+    if USE_LOCAL_MANIFEST {
         println!("Using local manifest.");
         let manifest_file = fs::File::open(LOCAL_MANIFEST_PATH)?;
         let manifest_reader = BufReader::new(manifest_file);
