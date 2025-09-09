@@ -17,30 +17,33 @@ mod tests {
     //     }
     // }
 
-    // use crate::manage_plugin::download_plugin;
+    use crate::manage_plugin::{
+        download_plugin,
+        download_plugin::PluginManifest
+    };
 
-    // #[test]
-    // fn test_download_plugin() -> Result<(), Box<dyn std::error::Error>> {
-    //     dotenv().ok();
-    //     let result = download_plugin::new(
-    //         "hianime", 
-    //         "latest",
-    //         json!({
-    //             "title": "HiAnime",
-    //             "manifest": "https://raw.githubusercontent.com/chlaty/chlaty-lib-hianime/refs/heads/main/manifes.json"
-    //         }),
-    //         |_, _| {}
-    //     );
-    //     match result {
-    //         Ok(data) => {
-    //             println!("Test [get installed plugin list] passed with result: {:?}", data);
-    //             return Ok(().into());
-    //         },
-    //         Err(e) => {
-    //             return Err(e.into());
-    //         },
-    //     }
-    // }
+    #[test]
+    fn test_download_plugin() -> Result<(), Box<dyn std::error::Error>> {
+        dotenv().ok();
+        let result = download_plugin::new(
+            "hianime", 
+            "latest",
+            PluginManifest{
+                title: "HiAnime".to_string(),
+                manifest: "https://raw.githubusercontent.com/chlaty/chlaty-lib-hianime/refs/heads/main/manifes.json".to_string()
+            },
+            |_, _| {}
+        );
+        match result {
+            Ok(data) => {
+                println!("Test [get installed plugin list] passed with result: {:?}", data);
+                return Ok(().into());
+            },
+            Err(e) => {
+                return Err(e.into());
+            },
+        }
+    }
 
     // use crate::manage_plugin::get_installed_plugin_list;
 

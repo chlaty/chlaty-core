@@ -1,5 +1,5 @@
 
-use serde_json::{from_reader, from_value, json, Value, to_string};
+use serde_json::{from_reader, json, Value, to_string};
 use std::io::{BufReader};
 use reqwest;
 use std::{env::consts};
@@ -52,21 +52,20 @@ fn get_plugin_release(manifest_url: &str, version: &str) -> Result<GetPluginRele
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct SourceManifest {
-    title: String,
-    manifest: String
+pub struct PluginManifest {
+    pub title: String,
+    pub manifest: String
 }
 
 pub fn new(
     id:&str, 
     version: &str,
-    manifest: Value, 
+    plugin_manifest_info: PluginManifest, 
     callback: fn(current_size: usize, total_size: usize)
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let source_manifest_info: SourceManifest = from_value(manifest)?;
 
     let get_plugin_release_result:GetPluginRelease;
-    match get_plugin_release(source_manifest_info.manifest.as_str(), version) {
+    match get_plugin_release(plugin_manifest_info.manifest.as_str(), version) {
         Ok(result) => get_plugin_release_result = result,
         Err(e) => return Err(e),
     }
@@ -106,7 +105,7 @@ pub fn new(
         let tree = sled::open(&plugin_dir.join("manifest"))?;
 
         let store_value = json!({
-            "title": source_manifest_info.title,
+            "title": plugin_manifest_info.title,
             "version": get_plugin_release_result.version,
             "plugin_path": &output_file.to_str().ok_or("Unable to convert output path to str")?
             

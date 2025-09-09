@@ -8,7 +8,7 @@ use crate::{ MANIFEST_URL, USE_LOCAL_MANIFEST, LOCAL_MANIFEST_PATH };
 
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct SourceInfo {
+pub struct PluginInfo {
     pub title: String,
     pub manifest: String
 }
@@ -20,8 +20,8 @@ pub struct SourceInfo {
 /// exist or if there is an error while downloading the manifest.
 ///
 /// The function will return `Ok(Value)` if the download is successful.
-pub fn new() -> Result<HashMap<String, SourceInfo>, Box<dyn std::error::Error>> {
-    let mut manifest_data: HashMap<String, SourceInfo> = HashMap::new();
+pub fn new() -> Result<HashMap<String, PluginInfo>, Box<dyn std::error::Error>> {
+    let mut manifest_data: HashMap<String, PluginInfo> = HashMap::new();
 
     if USE_LOCAL_MANIFEST {
         println!("Using local manifest.");
