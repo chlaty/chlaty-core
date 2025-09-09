@@ -57,12 +57,16 @@ pub struct PluginManifest {
     pub manifest: String
 }
 
-pub fn new(
+pub fn new<F>(
     id:&str, 
     version: &str,
     plugin_manifest_info: PluginManifest, 
-    callback: fn(current_size: usize, total_size: usize)
-) -> Result<(), Box<dyn std::error::Error>> {
+    callback: F
+) -> Result<(), Box<dyn std::error::Error>> 
+where
+    F: Fn(usize, usize),
+
+{
 
     let get_plugin_release_result:GetPluginRelease;
     match get_plugin_release(plugin_manifest_info.manifest.as_str(), version) {
