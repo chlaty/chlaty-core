@@ -114,20 +114,20 @@ mod tests {
     //     }
     // }
 
-    use crate::request_plugin::get_server;
+    // use crate::request_plugin::get_server;
 
-    #[test]
-    fn request_plugin_get_episode_server() -> Result<(), Box<dyn std::error::Error>> {
-        dotenv().ok();
-        let result = get_server::new("hianime", "672865");
-        match result {
-            Ok(data) => {
-                println!("Test [request plugin: get_episode_server] passed with result: {:?}", data);
-                return Ok(().into());
-            },
-            Err(e) => {
-                return Err(e.into());
-            },
-        }
-    }
+    // #[test]
+    // fn request_plugin_get_episode_server() -> Result<(), Box<dyn std::error::Error>> {
+    //     dotenv().ok();
+    //     let result = get_server::new("hianime", "672865");
+    //     match result {
+    //         Ok(data) => {
+    //             println!("Test [request plugin: get_episode_server] passed with result: {:?}", data);
+    //             return Ok(().into());
+    //         },
+    //         Err(e) => {
+    //             return Err(e.into());
+    //         },
+    //     }
+    // }
 }

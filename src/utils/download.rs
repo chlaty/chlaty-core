@@ -15,11 +15,15 @@ use reqwest::blocking::Client;
 ///             given two arguments: the number of bytes that have been
 ///             downloaded so far, and the total size of the file.
 ///
-pub fn new(
+pub fn new<F>(
     url: &str, 
     output_file: &str, 
-    callback: fn(current_size: usize, total_size: usize)
-) -> Result<(), Box<dyn std::error::Error>> {
+    callback: F
+) -> Result<(), Box<dyn std::error::Error>> 
+where
+    F: Fn(usize, usize),
+
+{
     let client = Client::new();
 
     let response = match client.get(url).send() {
