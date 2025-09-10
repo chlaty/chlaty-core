@@ -49,7 +49,7 @@ pub fn new(plugin_id: &str, id: &str) -> Result<HashMap<String, Vec<DataResult>>
     
     let request_result: RequestResult;
     unsafe {
-        let lib = Library::new(plugin_path).expect("Failed to load DLL");
+        let lib = Library::new(plugin_path).expect("Failed to load shared lib");
 
         // Load the symbol
         let callable: Symbol<unsafe extern "C" fn(*const c_char) -> *const c_char> =
