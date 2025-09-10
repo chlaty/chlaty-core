@@ -6,51 +6,18 @@ use std::{env::consts};
 use std::path::{PathBuf};
 use std::fs;
 use sled;
+use serde::{Deserialize, Serialize};
 
 use crate::utils::{get_lib_extension, download};
 use crate::manage_plugin::remove_plugin;
+use crate::manage_plugin::get_plugin_release;
+use crate::manage_plugin::get_plugin_release::GetPluginRelease;
 use crate::{DEFAULT_PLUGIN_DIRECTORY};
 
 
-use serde::{Deserialize, Serialize};
 
 
 
-
-struct GetPluginRelease{
-    url: String,
-    version: String
-}
-fn get_plugin_release(manifest_url: &str, version: &str) -> Result<GetPluginRelease, Box<dyn std::error::Error>> {
-    
-    let client = reqwest::blocking::Client::new();
-    let res = client.get(manifest_url).send()?;
-
-    if res.status().is_success() {
-        let manifest_reader = BufReader::new(res);
-        let manifest_data: Value = from_reader(manifest_reader)?;
-        let version_to_use = if version == "latest" {
-            manifest_data.get("latest-version")
-                .ok_or("Unable to find latest version inside manifest")?
-                .as_str().ok_or("Unable to convert latest version to str")?
-        }else{version};
-        
-        
-        let release_url = manifest_data.get(version_to_use)
-            .ok_or("Unable to find release url inside manifest")?
-            .as_str().ok_or("Unable to convert release url to str")?
-            .to_string();
-
-
-        return Ok(GetPluginRelease { url: release_url, version: version_to_use.to_string() });
-
-    }else{
-        return Err("Unable to download manifest".into());
-    }
-
-    
-
-}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PluginManifest {
@@ -69,8 +36,8 @@ where
 
 {
 
-    let get_plugin_release_result:GetPluginRelease;
-    match get_plugin_release(plugin_manifest_info.manifest.as_str(), version) {
+    let get_plugin_release_result: GetPluginRelease;
+    match get_plugin_release::new(plugin_manifest_info.manifest.as_str(), version) {
         Ok(result) => get_plugin_release_result = result,
         Err(e) => return Err(e),
     }
