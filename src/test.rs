@@ -18,14 +18,14 @@ mod tests {
     // }
 
     use crate::manage_plugin::{
-        download_plugin,
-        download_plugin::PluginManifest
+        install_plugin,
+        install_plugin::PluginManifest
     };
 
     #[test]
     fn test_download_plugin() -> Result<(), Box<dyn std::error::Error>> {
         dotenv().ok();
-        let result = download_plugin::new(
+        let result = install_plugin::new(
             "hianime", 
             "latest",
             PluginManifest{

@@ -8,6 +8,7 @@ use std::fs;
 use sled;
 
 use crate::utils::{get_lib_extension, download};
+use crate::manage_plugin::remove_plugin;
 use crate::{DEFAULT_PLUGIN_DIRECTORY};
 
 
@@ -96,7 +97,6 @@ where
             fs::create_dir_all(&plugin_dir)?;
         }
 
-        
 
         let output_file = PathBuf::from(&plugin_dir).join(&file_name);
         
@@ -105,6 +105,10 @@ where
             &output_file.to_str().ok_or("Unable to convert output path to str")?, 
             callback
         )?;
+
+        match remove_plugin::new(&id) {
+            _ => {}
+        }
 
         let tree = sled::open(&plugin_dir.join("manifest"))?;
 

@@ -26,7 +26,7 @@ pub fn new(plugin_id: &str) -> Result<(), Box<dyn std::error::Error>> {
         let plugin_path = PathBuf::from(&value.plugin_path);
 
         if plugin_path.exists() {
-            fs::remove_file(&plugin_path).unwrap();
+            fs::remove_file(&plugin_path)?;
         }
 
 
@@ -35,6 +35,8 @@ pub fn new(plugin_id: &str) -> Result<(), Box<dyn std::error::Error>> {
     }
 
     tree.remove(plugin_id.as_bytes())?;
+
+    tree.flush()?;
 
 
     return Ok(());
