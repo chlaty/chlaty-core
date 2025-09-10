@@ -59,7 +59,7 @@ where
 
         let lib_extension = get_lib_extension::new()?;
         let file_name = format!("lib-{}{}", &id, &lib_extension);
-        let plugin_dir = PathBuf::from(std::env::var("PLUGIN_DIRECTORY").unwrap_or(DEFAULT_PLUGIN_DIRECTORY.to_string()));
+        let plugin_dir = PathBuf::from(std::env::var("CHLATY_PLUGIN_DIRECTORY").unwrap_or(DEFAULT_PLUGIN_DIRECTORY.to_string()));
         if !plugin_dir.exists() {
             fs::create_dir_all(&plugin_dir)?;
         }
