@@ -12,6 +12,6 @@ and build Rust for cross-platform.
 
 # Support Platform for Dynamic Loading Shared Library
 - Windows `(.dll)`
-- MacOS `(.so)`
+- MacOS `(.dylib)`
 - Linux `(.so)`
 - Android `(.so)`
