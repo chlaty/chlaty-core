@@ -1,5 +1,4 @@
 # What's Chlaty-Core?
-**Chlaty-Core** is a rust package for working with chlaty plugins.
 
 <div>
     <a href="https://chlaty.gitbook.io/chlaty-docs">
@@ -7,4 +6,12 @@
     </a>
 </div>
 
+**Chlaty-Core** is a Rust package for working with Chlaty plugins. 
+The purpose of this package is to make it easy to load [chlaty-lib](https://github.com/orgs/chlaty/repositories?q=%23chlaty-lib) 
+and build Rust for cross-platform.
 
+# Support Platform for Dynamic Loading Shared Library
+- Windows `(.dll)`
+- MacOS `(.so)`
+- Linux `(.so)`
+- Android `(.so)`
