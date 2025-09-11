@@ -10,7 +10,7 @@
 The purpose of this package is to make it easy to load [chlaty-lib](https://github.com/orgs/chlaty/repositories?q=%23chlaty-lib) 
 and build Rust for cross-platform.
 
-# Support Platform for Dynamic Loading Shared Library
+# Support Platform for Loading Dynamic Shared Library
 - Windows `(.dll)`
 - MacOS `(.dylib)`
 - Linux `(.so)`
