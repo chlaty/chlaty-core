@@ -4,20 +4,20 @@ mod tests {
     use dotenv::dotenv;
     use serde_json::json;
 
-    use crate::manage_plugin::get_plugin_list;
-    #[test]
-    fn test_get_plugin_list() -> Result<(), Box<dyn std::error::Error>> {
-        let result = get_plugin_list::new("anime");
-        match result {
-            Ok(data) => {
-                println!("Test [get installed plugin list] passed with result: {:?}", data);
-                return Ok(().into());
-            },
-            Err(e) => {
-                return Err(e.into());
-            },
-        }
-    }
+    // use crate::manage_plugin::get_plugin_list;
+    // #[test]
+    // fn test_get_plugin_list() -> Result<(), Box<dyn std::error::Error>> {
+    //     let result = get_plugin_list::new("anime");
+    //     match result {
+    //         Ok(data) => {
+    //             println!("Test [get installed plugin list] passed with result: {:?}", data);
+    //             return Ok(().into());
+    //         },
+    //         Err(e) => {
+    //             return Err(e.into());
+    //         },
+    //     }
+    // }
 
     // use crate::manage_plugin::{
     //     install_plugin,
@@ -107,7 +107,7 @@ mod tests {
     // #[test]
     // fn request_plugin_get_episode_list() -> Result<(), Box<dyn std::error::Error>> {
     //     dotenv().ok();
-    //     let result = get_episode_list::new("hianime", "19262");
+    //     let result = get_episode_list::new("anime", "hianime", "19262");
     //     match result {
     //         Ok(data) => {
     //             println!("Test [request plugin: get_episode_list] passed with result: {:?}", data);
@@ -124,7 +124,7 @@ mod tests {
     // #[test]
     // fn request_plugin_get_episode_server() -> Result<(), Box<dyn std::error::Error>> {
     //     dotenv().ok();
-    //     let result = get_episode_server::new("hianime", "100");
+    //     let result = get_episode_server::new("anime", "hianime", "100");
     //     match result {
     //         Ok(data) => {
     //             println!("Test [request plugin: get_episode_server] passed with result: {:?}", data);
@@ -136,20 +136,20 @@ mod tests {
     //     }
     // }
 
-    // use crate::request_plugin::get_server;
+    use crate::request_plugin::get_server;
 
-    // #[test]
-    // fn request_plugin_get_episode_server() -> Result<(), Box<dyn std::error::Error>> {
-    //     dotenv().ok();
-    //     let result = get_server::new("hianime", "672865");
-    //     match result {
-    //         Ok(data) => {
-    //             println!("Test [request plugin: get_episode_server] passed with result: {:?}", data);
-    //             return Ok(().into());
-    //         },
-    //         Err(e) => {
-    //             return Err(e.into());
-    //         },
-    //     }
-    // }
+    #[test]
+    fn request_plugin_get_episode_server() -> Result<(), Box<dyn std::error::Error>> {
+        dotenv().ok();
+        let result = get_server::new("anime", "hianime", "672865");
+        match result {
+            Ok(data) => {
+                println!("Test [request plugin: get_episode_server] passed with result: {:?}", data);
+                return Ok(().into());
+            },
+            Err(e) => {
+                return Err(e.into());
+            },
+        }
+    }
 }
