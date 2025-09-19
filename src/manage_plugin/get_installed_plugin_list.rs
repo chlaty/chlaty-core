@@ -1,7 +1,6 @@
 use serde_json::{ from_str };
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::fs;
 use std::str::{from_utf8};
 use std::path::{PathBuf};
 use sled::{IVec};
@@ -27,7 +26,7 @@ pub fn new(source: &str) -> Result<HashMap<String, PluginInfo>, Box<dyn std::err
     if !source_dir.exists() {
         return Ok(data);
     }
-    
+
 
     if source_dir.exists() {
         let tree = sled::open(&source_dir)?;
