@@ -1,4 +1,4 @@
-use serde_json::{from_reader};
+use serde_json::{from_reader, Value};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs;
@@ -7,7 +7,7 @@ use reqwest;
 use crate::{ MANIFEST_URL, USE_LOCAL_MANIFEST, LOCAL_MANIFEST_PATH };
 
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PluginInfo {
     pub title: String,
     pub manifest: String
@@ -20,25 +20,29 @@ pub struct PluginInfo {
 /// exist or if there is an error while downloading the manifest.
 ///
 /// The function will return `Ok(Value)` if the download is successful.
-pub fn new() -> Result<HashMap<String, PluginInfo>, Box<dyn std::error::Error>> {
-    let mut manifest_data: HashMap<String, PluginInfo> = HashMap::new();
+pub fn new(source: &str) -> Result<HashMap<String, PluginInfo>, Box<dyn std::error::Error>> {
+    let mut data: HashMap<String, PluginInfo> = HashMap::new();
 
     if USE_LOCAL_MANIFEST {
         println!("Using local manifest.");
         let manifest_file = fs::File::open(LOCAL_MANIFEST_PATH)?;
-        let manifest_reader = BufReader::new(manifest_file);
-        manifest_data = from_reader(manifest_reader)?;
-        
+        let reader = BufReader::new(manifest_file);
+        let result: HashMap<String, HashMap<String, PluginInfo>> = from_reader(reader)?;
+        data = result.get(source).ok_or("Unable to find source")?.clone();
     }else{
         let client = reqwest::blocking::Client::new();
         let res = client.get(MANIFEST_URL).send()?;
 
         if res.status().is_success() {
-            let manifest_reader = BufReader::new(res);
-            manifest_data = from_reader(manifest_reader)?;
+            let reader = BufReader::new(res);
+            let result: HashMap<String, HashMap<String, PluginInfo>> = from_reader(reader)?;
             
+            data = result.get(source).ok_or("Unable to find source")?.clone();
         }
     }
-    return Ok(manifest_data);
+
+
+
+    return Ok(data);
 
 }

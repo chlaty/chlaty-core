@@ -12,13 +12,18 @@ pub struct PluginInfo {
     pub plugin_path: String
 }
 
-pub fn new(plugin_id: &str) -> Result<(), Box<dyn std::error::Error>> {
+pub fn new(source: &str, plugin_id: &str) -> Result<(), Box<dyn std::error::Error>> {
     let plugin_dir = PathBuf::from(std::env::var("CHLATY_PLUGIN_DIRECTORY").unwrap_or(DEFAULT_PLUGIN_DIRECTORY.to_string()));
-    if !plugin_dir.exists() {
-        fs::create_dir_all(&plugin_dir)?;
+    
+    let manifest_dir = plugin_dir.join("manifest");
+
+    let source_dir = manifest_dir.join(source);
+
+    if !source_dir.exists() {
+        fs::create_dir_all(&source_dir)?;
     }
 
-    let tree = sled::open(&plugin_dir.join("manifest"))?;
+    let tree = sled::open(&source_dir)?;
     if let Some(value)= tree.get(plugin_id.as_bytes())? {
         
         let value: PluginInfo = from_str(from_utf8(&value)?)?;

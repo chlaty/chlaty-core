@@ -17,19 +17,28 @@ pub struct PluginInfo {
 }
 
 
-pub fn new() -> Result<HashMap<String, PluginInfo>, Box<dyn std::error::Error>> {
+pub fn new(source: &str) -> Result<HashMap<String, PluginInfo>, Box<dyn std::error::Error>> {
     let plugin_dir = PathBuf::from(std::env::var("CHLATY_PLUGIN_DIRECTORY").unwrap_or(DEFAULT_PLUGIN_DIRECTORY.to_string()));
-    if !plugin_dir.exists() {
-        fs::create_dir_all(&plugin_dir)?;
-    }
+    let manifest_dir = plugin_dir.join("manifest");
+    let source_dir = manifest_dir.join(source);
+
     let mut data: HashMap<String, PluginInfo> = HashMap::new();
-    let tree = sled::open(&plugin_dir.join("manifest"))?;
-    for result in tree.iter() {
-        let (key, value): (IVec, IVec) = result?;
-        let value: PluginInfo = from_str(from_utf8(&value)?)?;
-        data.insert(from_utf8(&key)?.to_string(), value);
+
+    if !source_dir.exists() {
+        return Ok(data);
+    }
+    
+
+    if source_dir.exists() {
+        let tree = sled::open(&source_dir)?;
+        for result in tree.iter() {
+            let (key, value): (IVec, IVec) = result?;
+            let value: PluginInfo = from_str(from_utf8(&value)?)?;
+            data.insert(from_utf8(&key)?.to_string(), value);
+        }
     }
 
     return Ok(data);
     
+
 }

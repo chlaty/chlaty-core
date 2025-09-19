@@ -1,39 +1,13 @@
 mod tests {
+    use std::num::NonZero;
+
     use dotenv::dotenv;
     use serde_json::json;
 
-    // use crate::manage_plugin::get_plugin_list;
-    // #[test]
-    // fn test_get_plugin_list() -> Result<(), Box<dyn std::error::Error>> {
-    //     let result = get_plugin_list::new();
-    //     match result {
-    //         Ok(data) => {
-    //             println!("Test [get installed plugin list] passed with result: {:?}", data);
-    //             return Ok(().into());
-    //         },
-    //         Err(e) => {
-    //             return Err(e.into());
-    //         },
-    //     }
-    // }
-
-    use crate::manage_plugin::{
-        install_plugin,
-        install_plugin::PluginManifest
-    };
-
+    use crate::manage_plugin::get_plugin_list;
     #[test]
-    fn test_download_plugin() -> Result<(), Box<dyn std::error::Error>> {
-        dotenv().ok();
-        let result = install_plugin::new(
-            "hianime", 
-            "latest",
-            PluginManifest{
-                title: "HiAnime".to_string(),
-                manifest: "https://raw.githubusercontent.com/chlaty/chlaty-lib-hianime/refs/heads/main/manifes.json".to_string()
-            },
-            |_, _| {}
-        );
+    fn test_get_plugin_list() -> Result<(), Box<dyn std::error::Error>> {
+        let result = get_plugin_list::new("anime");
         match result {
             Ok(data) => {
                 println!("Test [get installed plugin list] passed with result: {:?}", data);
@@ -44,6 +18,35 @@ mod tests {
             },
         }
     }
+
+    // use crate::manage_plugin::{
+    //     install_plugin,
+    //     install_plugin::PluginManifest
+    // };
+
+    // #[test]
+    // fn test_download_plugin() -> Result<(), Box<dyn std::error::Error>> {
+    //     dotenv().ok();
+    //     let result = install_plugin::new(
+    //         "anime",
+    //         "hianime", 
+    //         "latest",
+    //         PluginManifest{
+    //             title: "HiAnime".to_string(),
+    //             manifest: "https://raw.githubusercontent.com/chlaty/chlaty-lib-hianime/refs/heads/main/manifes.json".to_string()
+    //         },
+    //         |_, _| {}
+    //     );
+    //     match result {
+    //         Ok(data) => {
+    //             println!("Test [get installed plugin list] passed with result: {:?}", data);
+    //             return Ok(().into());
+    //         },
+    //         Err(e) => {
+    //             return Err(e.into());
+    //         },
+    //     }
+    // }
 
     // use crate::manage_plugin::get_installed_plugin_list;
 
@@ -62,12 +65,12 @@ mod tests {
     //     }
     // }
 
-    // use crate::request_plugin::search;
+    // use crate::manage_plugin::get_plugin_release;
 
     // #[test]
     // fn request_plugin_search() -> Result<(), Box<dyn std::error::Error>> {
     //     dotenv().ok();
-    //     let result = search::new("hianime", "love", 1);
+    //     let result = get_plugin_release::new("https://raw.githubusercontent.com/chlaty/chlaty-lib-hianime/refs/heads/main/manifes.json", "latest");
     //     match result {
     //         Ok(data) => {
     //             println!("Test [request plugin: search] passed with result: {:?}", data);
@@ -79,13 +82,32 @@ mod tests {
     //     }
     // }
 
+    // use crate::request_plugin::search;
+
+    // #[test]
+    // fn request_plugin_search() -> Result<(), Box<dyn std::error::Error>> {
+    //     dotenv().ok();
+    //     let result = search::new("hianime", "one peace", NonZero::new(1).unwrap());
+    //     match result {
+    //         Ok(data) => {
+    //             println!("Test [request plugin: search] passed with result: {:?}", data);
+    //             return Ok(().into());
+    //         },
+    //         Err(e) => {
+    //             return Err(e.into());
+    //         },
+    //     }
+    // }
+
+    
+
 
     // use crate::request_plugin::get_episode_list;
 
     // #[test]
     // fn request_plugin_get_episode_list() -> Result<(), Box<dyn std::error::Error>> {
     //     dotenv().ok();
-    //     let result = get_episode_list::new("hianime", "100");
+    //     let result = get_episode_list::new("hianime", "19262");
     //     match result {
     //         Ok(data) => {
     //             println!("Test [request plugin: get_episode_list] passed with result: {:?}", data);

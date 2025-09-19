@@ -26,7 +26,8 @@ pub struct PluginManifest {
 }
 
 pub fn new<F>(
-    id:&str, 
+    source: &str,
+    id: &str, 
     version: &str,
     plugin_manifest_info: PluginManifest, 
     callback: F
@@ -60,6 +61,7 @@ where
         let lib_extension = get_lib_extension::new()?;
         let file_name = format!("lib-{}{}", &id, &lib_extension);
         let plugin_dir = PathBuf::from(std::env::var("CHLATY_PLUGIN_DIRECTORY").unwrap_or(DEFAULT_PLUGIN_DIRECTORY.to_string()));
+
         if !plugin_dir.exists() {
             fs::create_dir_all(&plugin_dir)?;
         }
@@ -73,11 +75,20 @@ where
             callback
         )?;
 
-        match remove_plugin::new(&id) {
+        match remove_plugin::new(source, id) {
             _ => {}
         }
 
-        let tree = sled::open(&plugin_dir.join("manifest"))?;
+        /* Save plugin info */
+        let manifest_dir = plugin_dir.join("manifest");
+
+        let source_dir = manifest_dir.join(source);
+
+        if !source_dir.exists() {
+            fs::create_dir_all(&source_dir)?;
+        }
+
+        let tree = sled::open(&source_dir)?;
 
         let store_value = json!({
             "title": plugin_manifest_info.title,
@@ -90,6 +101,8 @@ where
             to_string(&store_value)?.as_bytes()
         )?;
         tree.flush()?;
+        /* === */
+        
         return Ok(());
     }else{
         return Err("Unable to download manifest".into());
