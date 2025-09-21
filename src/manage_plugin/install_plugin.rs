@@ -79,10 +79,6 @@ where
             callback
         )?;
 
-        match remove_plugin::new(source, id) {
-            _ => {}
-        }
-
         /* Save plugin info */
         let manifest_dir = plugin_dir.join("manifest");
 

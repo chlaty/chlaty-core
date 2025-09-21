@@ -25,7 +25,7 @@ pub fn new(source: &str, plugin_id: &str) -> Result<(), Box<dyn std::error::Erro
 
     {
         let tree = sled::open(&source_dir)?;
-        if let Some(value)= tree.get(plugin_id.as_bytes())? {
+        if let Some(value) = tree.get(plugin_id.as_bytes())? {
             
             let value: PluginInfo = from_str(from_utf8(&value)?)?;
 
