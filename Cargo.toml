@@ -7,6 +7,7 @@ edition = "2024"
 opt-level = 3 
 lto = true 
 strip = true
+codegen-units = 1
 
 [dependencies]
 serde_json = "1.0.143"

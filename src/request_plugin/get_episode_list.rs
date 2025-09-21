@@ -30,11 +30,11 @@ pub struct PluginInfo {
 pub struct RequestResult {
     pub status: bool,
     pub message: String,
-    pub data: Vec<Vec<DataResult>>
+    pub data: Vec<Vec<Vec<DataResult>>>
 }
 
 
-pub fn new(source: &str, plugin_id: &str, id: &str) -> Result<Vec<Vec<DataResult>>, Box<dyn std::error::Error>>{
+pub fn new(source: &str, plugin_id: &str, id: &str) -> Result<Vec<Vec<Vec<DataResult>>>, Box<dyn std::error::Error>>{
 
     let plugin_dir = PathBuf::from(std::env::var("CHLATY_PLUGIN_DIRECTORY").unwrap_or(DEFAULT_PLUGIN_DIRECTORY.to_string()));
     let manifest_dir = plugin_dir.join("manifest");
