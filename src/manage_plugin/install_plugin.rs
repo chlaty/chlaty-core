@@ -75,7 +75,7 @@ where
 
         download::new(
             file_url, 
-            &output_file.to_str().ok_or("Unable to convert output path to str")?, 
+            &output_file.display().to_string(), 
             callback
         )?;
 
@@ -90,6 +90,12 @@ where
 
         if !source_dir.exists() {
             fs::create_dir_all(&source_dir)?;
+        }
+
+        {
+            let tree = sled::open(&source_dir)?;
+            tree.remove(&id.as_bytes())?;
+            tree.flush()?;
         }
 
         let tree = sled::open(&source_dir)?;
