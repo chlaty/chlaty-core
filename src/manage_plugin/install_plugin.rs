@@ -69,6 +69,10 @@ where
 
         let output_file = PathBuf::from(&plugin_dir).join(&file_name);
         
+        if output_file.exists() {
+            fs::remove_file(&output_file)?;
+        }
+
         download::new(
             file_url, 
             &output_file.to_str().ok_or("Unable to convert output path to str")?, 

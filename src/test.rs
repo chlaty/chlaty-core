@@ -82,35 +82,15 @@ mod tests {
     //     }
     // }
 
-    // use crate::request_plugin::search;
-
-    // #[test]
-    // fn request_plugin_search() -> Result<(), Box<dyn std::error::Error>> {
-    //     dotenv().ok();
-    //     let result = search::new("hianime", "one peace", NonZero::new(1).unwrap());
-    //     match result {
-    //         Ok(data) => {
-    //             println!("Test [request plugin: search] passed with result: {:?}", data);
-    //             return Ok(().into());
-    //         },
-    //         Err(e) => {
-    //             return Err(e.into());
-    //         },
-    //     }
-    // }
-
-    
-
-
-    use crate::request_plugin::get_episode_list;
+    use crate::request_plugin::search;
 
     #[test]
-    fn request_plugin_get_episode_list() -> Result<(), Box<dyn std::error::Error>> {
+    fn request_plugin_search() -> Result<(), Box<dyn std::error::Error>> {
         dotenv().ok();
-        let result = get_episode_list::new("anime", "hianime", "112");
+        let result = search::new("anime","hianime", "one peace", NonZero::new(1).unwrap());
         match result {
             Ok(data) => {
-                println!("Test [request plugin: get_episode_list] passed with result: {:?}", data);
+                println!("Test [request plugin: search] passed with result: {:?}", data);
                 return Ok(().into());
             },
             Err(e) => {
@@ -118,6 +98,26 @@ mod tests {
             },
         }
     }
+
+    
+
+
+    // use crate::request_plugin::get_episode_list;
+
+    // #[test]
+    // fn request_plugin_get_episode_list() -> Result<(), Box<dyn std::error::Error>> {
+    //     dotenv().ok();
+    //     let result = get_episode_list::new("anime", "hianime", "112");
+    //     match result {
+    //         Ok(data) => {
+    //             println!("Test [request plugin: get_episode_list] passed with result: {:?}", data);
+    //             return Ok(().into());
+    //         },
+    //         Err(e) => {
+    //             return Err(e.into());
+    //         },
+    //     }
+    // }
 
     // use crate::request_plugin::get_episode_server;
 
