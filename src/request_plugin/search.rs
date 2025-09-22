@@ -71,6 +71,7 @@ pub fn new(source: &str, plugin_id: &str, search: &str, page: NonZeroUsize) -> R
         
         
         let result_ptr = callable(args.as_ptr());
+        println!("Result_PTR: {:?}", result_ptr);
         request_result = from_str(CStr::from_ptr(result_ptr).to_str()?.to_owned().as_str())?;
         free_ptr(result_ptr as *mut c_char);
     }
