@@ -53,7 +53,7 @@ pub fn new(source: &str, plugin_id: &str, search: &str, page: NonZeroUsize) -> R
     let request_result: RequestResult;
 
     let lib = unsafe { Library::new(plugin_path).expect("Failed to load shared lib")};
-
+    println!("LIB_PTR: {:?}", lib);
     unsafe {
         
         // Load the symbol
