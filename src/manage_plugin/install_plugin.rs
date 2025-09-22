@@ -9,7 +9,6 @@ use sled;
 use serde::{Deserialize, Serialize};
 
 use crate::utils::{get_lib_extension, download};
-use crate::manage_plugin::remove_plugin;
 use crate::manage_plugin::get_plugin_release;
 use crate::manage_plugin::get_plugin_release::GetPluginRelease;
 use crate::{DEFAULT_PLUGIN_DIRECTORY};

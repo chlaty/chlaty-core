@@ -51,7 +51,7 @@ pub fn new(source: &str, plugin_id: &str, search: &str, page: NonZeroUsize) -> R
     let plugin_path = PathBuf::from(&plugin_info.plugin_path);
     
     let request_result: RequestResult;
-    
+
     let lib = unsafe { Library::new(plugin_path).expect("Failed to load shared lib")};
 
     unsafe {
@@ -71,7 +71,7 @@ pub fn new(source: &str, plugin_id: &str, search: &str, page: NonZeroUsize) -> R
         
         
         let result_ptr = callable(args.as_ptr());
-        request_result = from_str(CStr::from_ptr(result_ptr).to_str()?)?;
+        request_result = from_str(CStr::from_ptr(result_ptr).to_str()?.to_owned().as_str())?;
         free_ptr(result_ptr as *mut c_char);
     }
 
