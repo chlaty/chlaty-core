@@ -90,7 +90,7 @@ mod tests {
         let result = search::new("anime","hianime", "one peace", NonZero::new(1).unwrap());
         match result {
             Ok(data) => {
-                println!("Test [request plugin: search] passed with result: {:?}", data);
+                // println!("Test [request plugin: search] passed with result: {:?}", data);
                 return Ok(().into());
             },
             Err(e) => {

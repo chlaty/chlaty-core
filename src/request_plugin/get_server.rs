@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{from_str, to_string, json};
-use std::ffi::{ CString, c_char};
+use std::ffi::{ CString, c_char, CStr};
 use std::fs;
 use std::path::PathBuf;
 use libloading::{Library, Symbol};
@@ -94,19 +94,18 @@ pub fn new(source: &str, plugin_id: &str, id: &str) -> Result<ServerResult, Box<
         // Load the symbol
         let callable: Symbol<unsafe extern "C" fn(*const c_char) -> *const c_char> =
             lib.get(b"get_server").expect("Failed to load symbol");
+        
+        let free_ptr: Symbol<unsafe extern "C" fn(*mut c_char)> =
+            lib.get(b"free_ptr").expect("Failed to load symbol");
 
         // Prepare args
         let args = CString::new(to_string(&json!({
             "id": id,
         }))?).expect("CString::new failed while preparing args");
         
-        // Call the function
         let result_ptr = callable(args.as_ptr());
-        
-
-        // Convert result to Rust method
-        request_result = from_str(&CString::from_raw(result_ptr as *mut c_char).into_string()?)?;
-
+        request_result = from_str(CStr::from_ptr(result_ptr).to_str()?)?;
+        free_ptr(result_ptr as *mut c_char);
         
         if !request_result.status {
             return Err(format!("[Request failed]: {}", request_result.message).into());
