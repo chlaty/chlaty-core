@@ -12,7 +12,7 @@ use sled;
 use crate::{ DEFAULT_PLUGIN_DIRECTORY };
 
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct DataResult { 
     pub id: String,
     pub title: String,
@@ -20,14 +20,14 @@ pub struct DataResult {
 }
 
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PluginInfo {
     pub title: String,
     pub version: String,
     pub plugin_path: String
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct RequestResult {
     pub status: bool,
     pub message: String,

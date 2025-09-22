@@ -10,12 +10,12 @@ use sled;
 
 use crate::{ DEFAULT_PLUGIN_DIRECTORY };
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Timeline {
     pub start: usize,
     pub end: usize
 }
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SourceInfo {
     pub file: String,
 
@@ -23,14 +23,14 @@ pub struct SourceInfo {
     pub _type: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct TrackInfo {
     pub file: String,
     pub label: Option<String>,
     pub kind: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Config {
     pub host: String,
     pub origin: String,
@@ -40,7 +40,7 @@ pub struct Config {
 }
 
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct DataResult { 
     pub intro: Option<Timeline>,
     pub outro: Option<Timeline>,
@@ -49,21 +49,21 @@ pub struct DataResult {
     
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ServerResult { 
     pub data: DataResult,
     pub config: Config
 }
 
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PluginInfo {
     pub title: String,
     pub version: String,
     pub plugin_path: String
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct RequestResult {
     pub status: bool,
     pub message: String,

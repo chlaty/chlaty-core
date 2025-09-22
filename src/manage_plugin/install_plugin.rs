@@ -19,7 +19,7 @@ use crate::{DEFAULT_PLUGIN_DIRECTORY};
 
 
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PluginManifest {
     pub title: String,
     pub manifest: String

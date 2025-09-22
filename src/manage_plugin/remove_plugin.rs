@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::{ DEFAULT_PLUGIN_DIRECTORY };
 
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PluginInfo {
     pub plugin_path: String
 }
