@@ -51,10 +51,11 @@ pub fn new(source: &str, plugin_id: &str, search: &str, page: NonZeroUsize) -> R
     let plugin_path = PathBuf::from(&plugin_info.plugin_path);
     
     let request_result: RequestResult;
+    
+    let lib = unsafe { Library::new(plugin_path).expect("Failed to load shared lib")};
+
     unsafe {
         
-        let lib = Library::new(plugin_path).expect("Failed to load shared lib");
-
         // Load the symbol
         let callable: Symbol<unsafe extern "C" fn(*const c_char) -> *const c_char> =
             lib.get(b"search").expect("Failed to load symbol");
@@ -72,13 +73,11 @@ pub fn new(source: &str, plugin_id: &str, search: &str, page: NonZeroUsize) -> R
         let result_ptr = callable(args.as_ptr());
         request_result = from_str(CStr::from_ptr(result_ptr).to_str()?)?;
         free_ptr(result_ptr as *mut c_char);
-
-        if !request_result.status {
-            
-            return Err(request_result.message.into());
-
-        }
     }
 
-    Ok(request_result.data)
+    if !request_result.status {
+        return Err(request_result.message.into());
+    }
+
+    return Ok(request_result.data);
 }

@@ -88,9 +88,10 @@ pub fn new(source: &str, plugin_id: &str, id: &str) -> Result<ServerResult, Box<
     let plugin_path = PathBuf::from(&plugin_info.plugin_path);
     
     let request_result: RequestResult;
-    unsafe {
-        let lib = Library::new(plugin_path).expect("Failed to load shared lib");
 
+    let lib = unsafe { Library::new(plugin_path).expect("Failed to load shared lib")};
+
+    unsafe {
         // Load the symbol
         let callable: Symbol<unsafe extern "C" fn(*const c_char) -> *const c_char> =
             lib.get(b"get_server").expect("Failed to load symbol");
@@ -107,13 +108,15 @@ pub fn new(source: &str, plugin_id: &str, id: &str) -> Result<ServerResult, Box<
         request_result = from_str(CStr::from_ptr(result_ptr).to_str()?)?;
         free_ptr(result_ptr as *mut c_char);
         
-        if !request_result.status {
-            return Err(format!("[Request failed]: {}", request_result.message).into());
-        }
+        
+    }
+
+    if !request_result.status {
+        return Err(format!("[Request failed]: {}", request_result.message).into());
     }
     
-    Ok(ServerResult{
+    return Ok(ServerResult{
         data: request_result.data,
         config: request_result.config
-    })
+    });
 }
