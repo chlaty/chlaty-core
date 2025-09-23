@@ -48,22 +48,22 @@ mod tests {
     //     }
     // }
 
-    // use crate::manage_plugin::get_installed_plugin_list;
+    use crate::manage_plugin::get_installed_plugin_list;
 
-    // #[test]
-    // fn test_get_installed_plugin_list() -> Result<(), Box<dyn std::error::Error>> {
-    //     dotenv().ok();
-    //     let result = get_installed_plugin_list::new("anime");
-    //     match result {
-    //         Ok(data) => {
-    //             println!("Test [get installed plugin list] passed with result: {:?}", data);
-    //             return Ok(().into());
-    //         },
-    //         Err(e) => {
-    //             return Err(e.into());
-    //         },
-    //     }
-    // }
+    #[test]
+    fn test_get_installed_plugin_list() -> Result<(), Box<dyn std::error::Error>> {
+        dotenv().ok();
+        let result = get_installed_plugin_list::new("anime");
+        match result {
+            Ok(data) => {
+                println!("Test [get installed plugin list] passed with result: {:?}", data);
+                return Ok(().into());
+            },
+            Err(e) => {
+                return Err(e.into());
+            },
+        }
+    }
 
     // use crate::manage_plugin::get_plugin_release;
 

@@ -3,6 +3,7 @@ use std::path::PathBuf;
 use std::env;
 use std::fs;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 use crate::DEFAULT_PLUGIN_DIRECTORY;
 
@@ -36,31 +37,30 @@ pub fn get_db(table: &str) -> Result<Connection, Box<dyn std::error::Error>> {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PluginInfo {
-    pub plugin_id: String,
     pub title: String,
     pub version: String,
     pub plugin_path: String
 }
 
-pub fn get_all(source: &str) -> Result<Vec<PluginInfo>, Box<dyn std::error::Error>> {
+pub fn get_all(source: &str) -> Result<HashMap<String, PluginInfo>, Box<dyn std::error::Error>> {
     let conn = get_db(source)?;
     let mut stmt = conn.prepare(&format!(
         "SELECT plugin_id, title, version, plugin_path FROM {}",
         source
     ))?;
 
-    let data = stmt.query_map([], |row| {
-        Ok(PluginInfo {
-            plugin_id: row.get(0)?,
+    let rows = stmt.query_map([], |row| {
+        let plugin_id: String = row.get(0)?;
+        let plugin = PluginInfo {
             title: row.get(1)?,
             version: row.get(2)?,
             plugin_path: row.get(3)?,
-        })
+        };
+        Ok((plugin_id, plugin))
     })?;
-    
-    return Ok(data.filter_map(Result::ok).collect());
-    
 
+    let map = rows.collect::<Result<HashMap<_, _>, _>>()?;
+    Ok(map)
 }
 
 pub fn get(source: &str, plugin_id: &str) -> Result<Option<PluginInfo>, Box<dyn std::error::Error>> {
@@ -82,7 +82,6 @@ pub fn get(source: &str, plugin_id: &str) -> Result<Option<PluginInfo>, Box<dyn 
 
     let result = conn.query_row(&query, params![plugin_id], |row| {
         Ok(PluginInfo {
-            plugin_id: row.get(0)?,
             title: row.get(1)?,
             version: row.get(2)?,
             plugin_path: row.get(3)?,
