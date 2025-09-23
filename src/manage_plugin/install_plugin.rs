@@ -87,7 +87,7 @@ where
             source, 
             id, 
             &plugin_manifest_info.title, 
-            version, 
+            &get_plugin_release_result.version, 
             &output_file.display().to_string()
         )?;
 
