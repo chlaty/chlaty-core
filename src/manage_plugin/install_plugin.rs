@@ -1,16 +1,17 @@
 
-use serde_json::{from_reader, json, Value, to_string};
+use serde_json::{from_reader, Value};
 use std::io::{BufReader};
 use reqwest;
 use std::{env::consts};
 use std::path::{PathBuf};
 use std::fs;
-use sled;
 use serde::{Deserialize, Serialize};
 
-use crate::utils::{get_lib_extension, download};
+use crate::utils::{get_lib_extension, download, manifest::save};
 use crate::manage_plugin::get_plugin_release;
 use crate::manage_plugin::get_plugin_release::GetPluginRelease;
+
+
 use crate::{DEFAULT_PLUGIN_DIRECTORY};
 
 
@@ -60,13 +61,15 @@ where
         let lib_extension = get_lib_extension::new()?;
         let file_name = format!("lib-{}{}", &id, &lib_extension);
         let plugin_dir = PathBuf::from(std::env::var("CHLATY_PLUGIN_DIRECTORY").unwrap_or(DEFAULT_PLUGIN_DIRECTORY.to_string()));
+        
+        let source_dir = plugin_dir.join(source);
 
-        if !plugin_dir.exists() {
-            fs::create_dir_all(&plugin_dir)?;
+        if !source_dir.exists() {
+            fs::create_dir_all(&source_dir)?;
         }
 
 
-        let output_file = PathBuf::from(&plugin_dir).join(&file_name);
+        let output_file = PathBuf::from(&source_dir).join(&file_name);
         
         if output_file.exists() {
             fs::remove_file(&output_file)?;
@@ -78,34 +81,16 @@ where
             callback
         )?;
 
-        /* Save plugin info */
-        let manifest_dir = plugin_dir.join("manifest");
 
-        let source_dir = manifest_dir.join(source);
-
-        if !source_dir.exists() {
-            fs::create_dir_all(&source_dir)?;
-        }
-
-        {
-            let tree = sled::open(&source_dir)?;
-            tree.remove(&id.as_bytes())?;
-            tree.flush()?;
-        }
-
-        let tree = sled::open(&source_dir)?;
-
-        let store_value = json!({
-            "title": plugin_manifest_info.title,
-            "version": get_plugin_release_result.version,
-            "plugin_path": &output_file.to_str().ok_or("Unable to convert output path to str")?
-            
-        });
-        tree.insert(
-            &id.as_bytes(),
-            to_string(&store_value)?.as_bytes()
+        /* Save Plugin */
+        save(
+            source, 
+            id, 
+            &plugin_manifest_info.title, 
+            version, 
+            &output_file.display().to_string()
         )?;
-        tree.flush()?;
+
         /* === */
         
         return Ok(());

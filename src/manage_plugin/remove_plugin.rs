@@ -1,10 +1,8 @@
-use std::path::{PathBuf};
-use std::fs;
-use serde_json::{ from_str };
-use std::str::{from_utf8};
+
 use serde::{Deserialize, Serialize};
 
-use crate::{ DEFAULT_PLUGIN_DIRECTORY };
+use crate::utils::manifest::remove;
+
 
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -13,40 +11,9 @@ pub struct PluginInfo {
 }
 
 pub fn new(source: &str, plugin_id: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let plugin_dir = PathBuf::from(std::env::var("CHLATY_PLUGIN_DIRECTORY").unwrap_or(DEFAULT_PLUGIN_DIRECTORY.to_string()));
     
-    let manifest_dir = plugin_dir.join("manifest");
 
-    let source_dir = manifest_dir.join(source);
-
-    if !source_dir.exists() {
-        fs::create_dir_all(&source_dir)?;
-    }
-
-    {
-        let tree = sled::open(&source_dir)?;
-        if let Some(value) = tree.get(plugin_id.as_bytes())? {
-            
-            let value: PluginInfo = from_str(from_utf8(&value)?)?;
-
-            let plugin_path = PathBuf::from(&value.plugin_path);
-
-            if plugin_path.exists() {
-                fs::remove_file(&plugin_path)?;
-            }
-
-        }else{
-            return Err(format!("Plugin not ({}) found", plugin_id).into());
-        }
-
-        tree.flush()?;
-    }
-
-    let tree = sled::open(&source_dir)?;
-    tree.remove(plugin_id.as_bytes())?;
-
-    tree.flush()?;
-
+    remove(source, plugin_id)?;
 
     return Ok(());
     
