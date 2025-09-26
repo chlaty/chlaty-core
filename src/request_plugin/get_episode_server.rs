@@ -59,7 +59,7 @@ pub fn new(source: &str, plugin_id: &str, season_id: &str, episode_id: &str) -> 
     }
 
     if !request_result.status {
-        return Err(format!("[Request failed]: {}", request_result.message).into());
+        return Err(format!("[get_episode_server] Error: {}", request_result.message).into());
     }
 
     return Ok(request_result.data);
