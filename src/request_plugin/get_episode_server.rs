@@ -25,7 +25,7 @@ pub struct RequestResult {
 }
 
 
-pub fn new(source: &str, plugin_id: &str, season_id: &str, episode_id: &str) -> Result<HashMap<String, Vec<DataResult>>, Box<dyn std::error::Error>>{
+pub fn new(source: &str, plugin_id: &str, season_index: usize, episode_index: usize, episode_id: &str) -> Result<HashMap<String, Vec<DataResult>>, Box<dyn std::error::Error>>{
 
     let plugin_info = get(source, plugin_id)?.ok_or("Plugin not found")?;
 
@@ -46,7 +46,8 @@ pub fn new(source: &str, plugin_id: &str, season_id: &str, episode_id: &str) -> 
 
         // Prepare args
         let args = CString::new(to_string(&json!({
-            "season_id": season_id,
+            "season_index": season_index,
+            "episode_index": episode_index,
             "episode_id": episode_id,
         }))?).expect("CString::new failed while preparing args");
         
