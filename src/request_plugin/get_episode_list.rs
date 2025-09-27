@@ -31,21 +31,21 @@ pub fn new(source: &str, plugin_id: &str, id: &str) -> Result<Vec<Vec<Vec<DataRe
     
     let request_result: RequestResult;
 
-    let lib = unsafe { Library::new(plugin_path).expect("Failed to load shared lib")};
+    let lib = unsafe { Library::new(plugin_path)?};
 
 
     unsafe {
         // Load the symbol
         let callable: Symbol<unsafe extern "C" fn(*const c_char) -> *const c_char> =
-            lib.get(b"get_episode_list").expect("Failed to load symbol");
+            lib.get(b"get_episode_list")?;
         
         let free_ptr: Symbol<unsafe extern "C" fn(*mut c_char)> =
-            lib.get(b"free_ptr").expect("Failed to load symbol");
+            lib.get(b"free_ptr")?;
 
         // Prepare args
         let args = CString::new(to_string(&json!({
             "id": id,
-        }))?).expect("CString::new failed while preparing args");
+        }))?)?;
         
         
         let result_ptr = callable(args.as_ptr());

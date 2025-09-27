@@ -39,22 +39,22 @@ pub fn new(source: &str, plugin_id: &str, search: &str, page: NonZeroUsize) -> R
     
     let request_result: RequestResult;
 
-    let lib = unsafe { Library::new(plugin_path).expect("Failed to load shared lib")};
+    let lib = unsafe { Library::new(plugin_path)?};
 
     unsafe {
         
         // Load the symbol
         let callable: Symbol<unsafe extern "C" fn(*const c_char) -> *const c_char> =
-            lib.get(b"search").expect("Failed to load symbol");
+            lib.get(b"search")?;
 
         let free_ptr: Symbol<unsafe extern "C" fn(*mut c_char)> =
-            lib.get(b"free_ptr").expect("Failed to load symbol");
+            lib.get(b"free_ptr")?;
 
         // Prepare args
         let args = CString::new(to_string(&json!({
             "search": search,
             "page": page
-        }))?).expect("CString::new failed while preparing args");
+        }))?)?;
         
         
         let result_ptr = callable(args.as_ptr());

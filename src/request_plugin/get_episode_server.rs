@@ -33,23 +33,23 @@ pub fn new(source: &str, plugin_id: &str, season_index: usize, episode_index: us
     
     let request_result: RequestResult;
 
-    let lib = unsafe { Library::new(plugin_path).expect("Failed to load shared lib")};
+    let lib = unsafe { Library::new(plugin_path)?};
 
 
     unsafe {
         // Load the symbol
         let callable: Symbol<unsafe extern "C" fn(*const c_char) -> *const c_char> =
-            lib.get(b"get_episode_server").expect("Failed to load symbol");
+            lib.get(b"get_episode_server")?;
         
         let free_ptr: Symbol<unsafe extern "C" fn(*mut c_char)> =
-            lib.get(b"free_ptr").expect("Failed to load symbol");
+            lib.get(b"free_ptr")?;
 
         // Prepare args
         let args = CString::new(to_string(&json!({
             "season_index": season_index,
             "episode_index": episode_index,
             "episode_id": episode_id,
-        }))?).expect("CString::new failed while preparing args");
+        }))?)?;
         
         let result_ptr = callable(args.as_ptr());
         request_result = from_str(CStr::from_ptr(result_ptr).to_str()?.to_owned().as_str())?;
