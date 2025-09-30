@@ -12,6 +12,7 @@ use crate::utils::manifest::get;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct DataResult { 
+    pub index: usize,
     pub id: String,
     pub title: String
 }
