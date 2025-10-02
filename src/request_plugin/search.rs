@@ -39,10 +39,9 @@ pub fn new(source: &str, plugin_id: &str, search: &str, page: NonZeroUsize) -> R
     
     let request_result: RequestResult;
 
-    let lib = unsafe { Library::new(plugin_path)?};
-
     unsafe {
-        
+        let lib = Library::new(plugin_path)?;
+
         // Load the symbol
         let callable: Symbol<unsafe extern "C" fn(*const c_char) -> *const c_char> =
             lib.get(b"search")?;
@@ -59,12 +58,16 @@ pub fn new(source: &str, plugin_id: &str, search: &str, page: NonZeroUsize) -> R
         
         let result_ptr = callable(args.as_ptr());
 
-        request_result = from_str(CStr::from_ptr(result_ptr).to_str()?.to_owned().as_str())?;
+        if result_ptr.is_null() {
+            return Err("[search] result_ptr is null.")?;
+        }
+
+        request_result = from_str(&CStr::from_ptr(result_ptr).to_str()?.to_owned())?;
         free_ptr(result_ptr as *mut c_char);
     }
 
     if !request_result.status {
-        return Err(request_result.message.into());
+        return Err(format!("[search]: {}", request_result.message))?;
     }
 
     return Ok(request_result.data);
