@@ -110,7 +110,7 @@ mod tests {
         dotenv().ok();
         use crate::init;
 
-        init().await?;
+        init();
         let mut handles: Vec<JoinHandle<()>> = Vec::new();
         for _ in 0..10 {
             let handle =  tokio::spawn(async move {

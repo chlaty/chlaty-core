@@ -19,7 +19,7 @@ use tokio::time::{sleep, Duration};
 
 const MAX_PLUGIN_LIFE: usize = 5 * 60_000;
 
-pub async fn init() -> Result<(), Box<dyn std::error::Error>> { 
+pub fn init() -> () { 
 
     /* Spawn Worker */
     spawn(async {
@@ -34,6 +34,4 @@ pub async fn init() -> Result<(), Box<dyn std::error::Error>> {
         
     });
     /* --- */
-
-    return Ok(());
 }
