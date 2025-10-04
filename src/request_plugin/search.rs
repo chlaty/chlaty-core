@@ -3,10 +3,8 @@ use serde_json::{from_str, to_string, json};
 use std::ffi::{CString, c_char, CStr};
 
 use std::num::NonZeroUsize;
-use std::path::PathBuf;
-use libloading::{Library, Symbol};
 
-use crate::utils::manifest::get;
+use crate::utils::plugin_loader;
 
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -34,20 +32,12 @@ pub struct RequestResult {
 
 pub fn new(source: &str, plugin_id: &str, search: &str, page: NonZeroUsize) -> Result<Vec<DataResult>, Box<dyn std::error::Error>>{
 
-    let plugin_info = get(source, plugin_id)?.ok_or("Plugin not found")?;
-    let plugin_path = PathBuf::from(&plugin_info.plugin_path);
     
     let request_result: RequestResult;
 
     unsafe {
-        let lib = Library::new(plugin_path)?;
-
-        // Load the symbol
-        let callable: Symbol<unsafe extern "C" fn(*const c_char) -> *const c_char> =
-            lib.get(b"search")?;
-
-        let free_ptr: Symbol<unsafe extern "C" fn(*mut c_char)> =
-            lib.get(b"free_ptr")?;
+        let get_search = plugin_loader::get(source, plugin_id)?.search;
+        let free_ptr = plugin_loader::get(source, plugin_id)?.free_ptr;
 
         // Prepare args
         let args = CString::new(to_string(&json!({
@@ -56,7 +46,7 @@ pub fn new(source: &str, plugin_id: &str, search: &str, page: NonZeroUsize) -> R
         }))?)?;
         
         
-        let result_ptr = callable(args.as_ptr());
+        let result_ptr = get_search(args.as_ptr());
 
         if result_ptr.is_null() {
             return Err("[search] result_ptr is null.")?;

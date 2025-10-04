@@ -102,22 +102,35 @@ mod tests {
     
 
 
-    // use crate::request_plugin::get_episode_list;
+    use crate::request_plugin::get_episode_list;
+    use tokio::{self, task::JoinHandle};
 
-    // #[test]
-    // fn request_plugin_get_episode_list() -> Result<(), Box<dyn std::error::Error>> {
-    //     dotenv().ok();
-    //     let result = get_episode_list::new("anime", "hianime", "112");
-    //     match result {
-    //         Ok(data) => {
-    //             println!("Test [request plugin: get_episode_list] passed with result: {:?}", data);
-    //             return Ok(().into());
-    //         },
-    //         Err(e) => {
-    //             return Err(e.into());
-    //         },
-    //     }
-    // }
+    #[tokio::test]
+    async fn request_plugin_get_episode_list() -> Result<(), Box<dyn std::error::Error>> {
+        dotenv().ok();
+        let mut handles: Vec<JoinHandle<()>> = Vec::new();
+        for _ in 0..1 {
+            let handle =  tokio::spawn(async move {
+                let result = get_episode_list::new("anime", "hianime", "112");
+                match result {
+                    Ok(data) => {
+                        println!("Test [request plugin: get_episode_list] passed with result: {:?}", data);
+                        return;
+                    },
+                    Err(e) => {
+                        println!("Test [request plugin: get_episode_list] failed with error: {}", e);
+                        return;
+                    },
+                }
+            });
+            handles.push(handle);
+        };
+        for handle in handles {
+            let _ = handle.await;
+        }
+
+        return Ok(());
+    }
 
     // use crate::request_plugin::get_episode_server;
 
