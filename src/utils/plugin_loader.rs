@@ -30,7 +30,7 @@ lazy_static! {
 
 pub fn get(source: &str, plugin_id: &str) -> Result<Plugin, Box<dyn std::error::Error>> {
     if let Some(mut plugin) = PLUGIN_REGISTRY.get_mut(plugin_id) {
-        plugin.last_use = Utc::now().timestamp() as usize;
+        plugin.last_use = Utc::now().timestamp_millis() as usize;
         return Ok(plugin.value().clone());
     }else{
         unsafe {
