@@ -19,7 +19,6 @@ dotenv = "0.15.0"
 libloading = "0.8.9"
 dashmap = "6.1.0"
 lazy_static = "1.5.0"
-
-[dev-dependencies]
+chrono = "0.4.42"
 tokio = { version = "1.47.1", features = ["macros", "rt"] }
 

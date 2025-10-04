@@ -5,10 +5,11 @@ use libloading::{Library, Symbol};
 use std::{ ffi::c_char};
 use std::sync::Arc;
 use std::path::PathBuf;
+use chrono::Utc;
 
 use crate::utils::manifest;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Plugin{
     pub lib: Arc<Library>,
     pub search: unsafe extern "C" fn(*const c_char) -> *const c_char,
@@ -16,18 +17,20 @@ pub struct Plugin{
     pub get_episode_server: unsafe extern "C" fn(*const c_char) -> *const c_char,
     pub get_server: unsafe extern "C" fn(*const c_char) -> *const c_char,
     pub free_ptr: unsafe extern "C" fn(*mut c_char),
+    pub last_use: usize,
 
 }
 
 lazy_static! {
     /* <plugin_id, Plugin> */
-    pub static ref PLUGIN_REGISTRY: DashMap<String, Arc<Plugin>> = DashMap::new();
+    pub static ref PLUGIN_REGISTRY: DashMap<String, Plugin> = DashMap::new();
     /* --- */
 
 }
 
-pub fn get(source: &str, plugin_id: &str) -> Result<Arc<Plugin>, Box<dyn std::error::Error>> {
-    if let Some(plugin) = &PLUGIN_REGISTRY.get(plugin_id) {
+pub fn get(source: &str, plugin_id: &str) -> Result<Plugin, Box<dyn std::error::Error>> {
+    if let Some(mut plugin) = PLUGIN_REGISTRY.get_mut(plugin_id) {
+        plugin.last_use = Utc::now().timestamp() as usize;
         return Ok(plugin.value().clone());
     }else{
         unsafe {
@@ -55,14 +58,15 @@ pub fn get(source: &str, plugin_id: &str) -> Result<Arc<Plugin>, Box<dyn std::er
                 lib_for_symbol.get(b"free_ptr")?;
             /* --- */
 
-            let new_loaded_plugin = Arc::new(Plugin{
+            let new_loaded_plugin = Plugin{
                 lib,
                 search: *search,
                 get_episode_list: *get_episode_list,
                 get_episode_server: *get_episode_server,
                 get_server: *get_server,
-                free_ptr: *free_ptr
-            });
+                free_ptr: *free_ptr,
+                last_use: Utc::now().timestamp_millis() as usize
+            };
 
             PLUGIN_REGISTRY.insert(plugin_id.to_string(), new_loaded_plugin.clone());
 
@@ -71,8 +75,4 @@ pub fn get(source: &str, plugin_id: &str) -> Result<Arc<Plugin>, Box<dyn std::er
     }
 }
 
-pub fn unload(plugin_id: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let _ = PLUGIN_REGISTRY.remove(plugin_id);
-    Ok(())
-}
 

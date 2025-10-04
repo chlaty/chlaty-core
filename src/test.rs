@@ -108,8 +108,11 @@ mod tests {
     #[tokio::test]
     async fn request_plugin_get_episode_list() -> Result<(), Box<dyn std::error::Error>> {
         dotenv().ok();
+        use crate::init;
+
+        init().await?;
         let mut handles: Vec<JoinHandle<()>> = Vec::new();
-        for _ in 0..1 {
+        for _ in 0..10 {
             let handle =  tokio::spawn(async move {
                 let result = get_episode_list::new("anime", "hianime", "112");
                 match result {
