@@ -4,5 +4,11 @@
             "title": "HiAnime",
             "manifest": "https://raw.githubusercontent.com/chlaty/chlaty-lib-hianime/refs/heads/main/manifes.json"
         }
+    },
+    "movie": {
+        "hydrahd": {
+            "title": "HydraHD",
+            "manifest": "https://raw.githubusercontent.com/chlaty/chlaty-lib-hydrahd/refs/heads/main/manifes.json"
+        }
     }
 }
