@@ -28,7 +28,10 @@ pub fn new(source: &str) -> Result<HashMap<String, PluginInfo>, Box<dyn std::err
         let manifest_file = fs::File::open(LOCAL_MANIFEST_PATH)?;
         let reader = BufReader::new(manifest_file);
         let result: HashMap<String, HashMap<String, PluginInfo>> = from_reader(reader)?;
-        data = result.get(source).ok_or("Unable to find source")?.clone();
+        data = match result.get(source) {
+            Some(v) => v.clone(),
+            None => HashMap::new(),
+        }
     }else{
         let client = reqwest::blocking::Client::new();
         let res = client.get(MANIFEST_URL).send()?;
@@ -37,7 +40,10 @@ pub fn new(source: &str) -> Result<HashMap<String, PluginInfo>, Box<dyn std::err
             let reader = BufReader::new(res);
             let result: HashMap<String, HashMap<String, PluginInfo>> = from_reader(reader)?;
             
-            data = result.get(source).ok_or("Unable to find source")?.clone();
+            data = match result.get(source) {
+                Some(v) => v.clone(),
+                None => HashMap::new(),
+            }
         }
     }
 
