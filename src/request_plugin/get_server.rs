@@ -59,7 +59,7 @@ pub struct RequestResult {
 }
 
 
-pub fn new(source: &str, plugin_id: &str, id: &str) -> Result<ServerResult, Box<dyn std::error::Error>>{
+pub fn new(source: &str, plugin_id: &str, index: usize, id: &str) -> Result<ServerResult, Box<dyn std::error::Error>>{
 
     
     let request_result: RequestResult;
@@ -73,6 +73,7 @@ pub fn new(source: &str, plugin_id: &str, id: &str) -> Result<ServerResult, Box<
 
         // Prepare args
         let args = CString::new(to_string(&json!({
+            "index": index,
             "id": id,
         }))?)?;
         
@@ -83,6 +84,7 @@ pub fn new(source: &str, plugin_id: &str, id: &str) -> Result<ServerResult, Box<
         }
 
         request_result = from_str(&CStr::from_ptr(result_ptr).to_str()?.to_owned())?;
+        println!("request_result: {:#?}", request_result);
         free_ptr(result_ptr as *mut c_char);
         
         
