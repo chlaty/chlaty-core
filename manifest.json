@@ -12,7 +12,7 @@
         },
         "superembed": {
             "title": "SuperEmbed",
-            "manifest": "https://raw.githubusercontent.com/chlaty/chlaty-lib-superembed/refs/heads/main/manifes.json"
+            "manifest": "https://raw.githubusercontent.com/chlaty/chlaty-lib-superembed/refs/heads/main/manifest.json"
         }
     }
 }
