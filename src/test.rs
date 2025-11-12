@@ -19,34 +19,34 @@ mod tests {
     //     }
     // }
 
-    // use crate::manage_plugin::{
-    //     install_plugin,
-    //     install_plugin::PluginManifest
-    // };
+    use crate::manage_plugin::{
+        install_plugin,
+        install_plugin::PluginManifest
+    };
 
-    // #[test]
-    // fn test_download_plugin() -> Result<(), Box<dyn std::error::Error>> {
-    //     dotenv().ok();
-    //     let result = install_plugin::new(
-    //         "anime",
-    //         "hianime", 
-    //         "latest",
-    //         PluginManifest{
-    //             title: "HiAnime".to_string(),
-    //             manifest: "https://raw.githubusercontent.com/chlaty/chlaty-lib-hianime/refs/heads/main/manifes.json".to_string()
-    //         },
-    //         |_, _| {}
-    //     );
-    //     match result {
-    //         Ok(data) => {
-    //             println!("Test [get installed plugin list] passed with result: {:?}", data);
-    //             return Ok(().into());
-    //         },
-    //         Err(e) => {
-    //             return Err(e.into());
-    //         },
-    //     }
-    // }
+    #[test]
+    fn test_download_plugin() -> Result<(), Box<dyn std::error::Error>> {
+        dotenv().ok();
+        let result = install_plugin::new(
+            "movie",
+            "hydrahd", 
+            "latest",
+            PluginManifest{
+                title: "HydraHD".to_string(),
+                manifest: "https://raw.githubusercontent.com/chlaty/chlaty-lib-hydrahd/refs/heads/main/manifes.json".to_string()
+            },
+            |_, _| {}
+        );
+        match result {
+            Ok(data) => {
+                println!("Test [get installed plugin list] passed with result: {:?}", data);
+                return Ok(().into());
+            },
+            Err(e) => {
+                return Err(e.into());
+            },
+        }
+    }
 
     // use crate::manage_plugin::get_installed_plugin_list;
 
@@ -152,20 +152,20 @@ mod tests {
     //     }
     // }
 
-    use crate::request_plugin::get_server;
+    // use crate::request_plugin::get_server;
 
-    #[test]
-    fn request_plugin_get_episode_server() -> Result<(), Box<dyn std::error::Error>> {
-        dotenv().ok();
-        let result = get_server::new("movie", "hydrahd", 2, "https%3A%2F%2Fhyhd.org%2Fembed%2Ftt9140554%2F1-1%2F");
-        match result {
-            Ok(data) => {
-                println!("Test [request plugin: get_episode_server] passed with result: {:?}", data);
-                return Ok(().into());
-            },
-            Err(e) => {
-                return Err(e.into());
-            },
-        }
-    }
+    // #[test]
+    // fn request_plugin_get_episode_server() -> Result<(), Box<dyn std::error::Error>> {
+    //     dotenv().ok();
+    //     let result = get_server::new("movie", "hydrahd", 2, "https%3A%2F%2Fhyhd.org%2Fembed%2Ftt9140554%2F1-1%2F");
+    //     match result {
+    //         Ok(data) => {
+    //             println!("Test [request plugin: get_episode_server] passed with result: {:?}", data);
+    //             return Ok(().into());
+    //         },
+    //         Err(e) => {
+    //             return Err(e.into());
+    //         },
+    //     }
+    // }
 }

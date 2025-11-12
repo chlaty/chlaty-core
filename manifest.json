@@ -9,6 +9,10 @@
         "hydrahd": {
             "title": "HydraHD",
             "manifest": "https://raw.githubusercontent.com/chlaty/chlaty-lib-hydrahd/refs/heads/main/manifes.json"
+        },
+        "superembed": {
+            "title": "SuperEmbed",
+            "manifest": "https://raw.githubusercontent.com/chlaty/chlaty-lib-superembed/refs/heads/main/manifes.json"
         }
     }
 }
