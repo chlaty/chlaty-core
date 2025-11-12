@@ -5,7 +5,7 @@ use std::fs;
 
 use crate::utils::manifest::remove;
 use crate::utils::get_lib_extension;
-
+use crate::utils::plugin_loader;
 use crate::DEFAULT_PLUGIN_DIRECTORY;
 
 
@@ -17,7 +17,7 @@ pub struct PluginInfo {
 
 pub fn new(source: &str, plugin_id: &str) -> Result<(), Box<dyn std::error::Error>> {
     
-
+    plugin_loader::remove(plugin_id);
     remove(source, plugin_id)?;
 
     let plugin_dir = PathBuf::from(std::env::var("CHLATY_PLUGIN_DIRECTORY").unwrap_or(DEFAULT_PLUGIN_DIRECTORY.to_string()));

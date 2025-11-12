@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 use crate::utils::{get_lib_extension, download, manifest::save};
 use crate::manage_plugin::get_plugin_release;
 use crate::manage_plugin::get_plugin_release::GetPluginRelease;
-
+use crate::utils::plugin_loader;
 
 use crate::{DEFAULT_PLUGIN_DIRECTORY};
 
@@ -47,6 +47,7 @@ where
     let res = client.get(get_plugin_release_result.url).send()?;
 
     if res.status().is_success() {
+        plugin_loader::remove(id);
         let manifest_reader = BufReader::new(res);
         let release_manifest_data: Value = from_reader(manifest_reader)?;
         

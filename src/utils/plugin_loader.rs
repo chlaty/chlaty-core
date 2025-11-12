@@ -6,6 +6,8 @@ use std::{ ffi::c_char};
 use std::sync::Arc;
 use std::path::PathBuf;
 use chrono::Utc;
+use std::time::{{Duration}};
+use std::thread::sleep;
 
 use crate::utils::manifest;
 
@@ -75,4 +77,15 @@ pub fn get(source: &str, plugin_id: &str) -> Result<Plugin, Box<dyn std::error::
     }
 }
 
+pub fn remove(plugin_id: &str) {
+    if let Some((_, plugin)) = PLUGIN_REGISTRY.remove(plugin_id) {
+        let lib_arc = plugin.lib.clone();
 
+        loop {
+            if Arc::strong_count(&lib_arc) == 1 {
+                break;
+            }
+            sleep(Duration::from_millis(100));
+        }
+    }
+}
