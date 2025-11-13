@@ -11,7 +11,6 @@ pub struct DataResult {
     pub index: usize,
     pub id: String,
     pub title: String,
-    pub verify_url: Option<String>
 }
 
 

@@ -12,7 +12,8 @@ use crate::utils::plugin_loader;
 pub struct DataResult { 
     pub index: usize,
     pub id: String,
-    pub title: String
+    pub title: String,
+    pub verify_url: Option<String>
 }
 
 
