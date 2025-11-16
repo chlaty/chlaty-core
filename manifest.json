@@ -6,6 +6,10 @@
         }
     },
     "movie": {
+        "moviesapi": {
+            "title": "MoviesAPI",
+            "manifest": "https://raw.githubusercontent.com/chlaty/chlaty-lib-moviesapi/refs/heads/main/manifest.json"
+        },
         "hydrahd": {
             "title": "HydraHD",
             "manifest": "https://raw.githubusercontent.com/chlaty/chlaty-lib-hydrahd/refs/heads/main/manifes.json"
