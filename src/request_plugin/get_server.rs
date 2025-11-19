@@ -22,6 +22,7 @@ pub struct TrackInfo {
     pub file: String,
     pub label: Option<String>,
     pub kind: String,
+    pub default: Option<bool>
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
