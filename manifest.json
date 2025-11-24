@@ -15,7 +15,7 @@
             "manifest": "https://raw.githubusercontent.com/chlaty/chlaty-lib-hydrahd/refs/heads/main/manifes.json"
         },
         "superembed": {
-            "title": "SuperEmbed (Not Working)",
+            "title": "SuperEmbed (Might Work)",
             "manifest": "https://raw.githubusercontent.com/chlaty/chlaty-lib-superembed/refs/heads/main/manifest.json"
         }
     }
