@@ -20,35 +20,23 @@ pub struct PluginInfo {
 /// exist or if there is an error while downloading the manifest.
 ///
 /// The function will return `Ok(Value)` if the download is successful.
-pub fn new(source: &str) -> Result<HashMap<String, PluginInfo>, Box<dyn std::error::Error>> {
-    let mut data: HashMap<String, PluginInfo> = HashMap::new();
+pub fn new() -> Result<HashMap<String, HashMap<String, PluginInfo>>, Box<dyn std::error::Error>> {
+    let mut data: HashMap<String, HashMap<String, PluginInfo>> = HashMap::new();
 
     if USE_LOCAL_MANIFEST {
-        println!("Using local manifest.");
+        dbg!("Using local manifest.");
         let manifest_file = fs::File::open(LOCAL_MANIFEST_PATH)?;
         let reader = BufReader::new(manifest_file);
-        let result: HashMap<String, HashMap<String, PluginInfo>> = from_reader(reader)?;
-        data = match result.get(source) {
-            Some(v) => v.clone(),
-            None => HashMap::new(),
-        }
+        data = from_reader(reader)?;
     }else{
         let client = reqwest::blocking::Client::new();
         let res = client.get(MANIFEST_URL).send()?;
 
         if res.status().is_success() {
             let reader = BufReader::new(res);
-            let result: HashMap<String, HashMap<String, PluginInfo>> = from_reader(reader)?;
-            
-            data = match result.get(source) {
-                Some(v) => v.clone(),
-                None => HashMap::new(),
-            }
+            data = from_reader(reader)?;
         }
     }
-
-
-
     return Ok(data);
 
 }
