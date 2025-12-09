@@ -7,7 +7,7 @@
     },
     "movie": {
         "moviesapi": {
-            "title": "MoviesAPI",
+            "title": "MoviesAPI (Not Working)",
             "manifest": "https://raw.githubusercontent.com/chlaty/chlaty-lib-moviesapi/refs/heads/main/manifest.json"
         },
         "hydrahd": {
